@@ -43,7 +43,7 @@
 <h2>A history of music media formats and how they impacted industry</h2>
 
 {#if data}
-  <Vis {data} />
+  <Vis sourcedata={data} />
 {:else}
   <p>Loading</p>
 {/if}
