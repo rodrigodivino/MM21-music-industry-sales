@@ -1,18 +1,19 @@
 <script>
   import Vis from "../components/Vis.svelte";
   import { read as readXLSX, utils } from "xlsx";
-  let dataPromise = fetch(
-    "https://query.data.world/s/ne5hioeoptdqvimde7lx4l262nr7i3"
-  )
-    .then(res => {
-      return res.arrayBuffer();
-    })
-    .then(res => {
-      var workbook = readXLSX(new Uint8Array(res), {
-        type: "array"
-      });
-      return utils.sheet_to_json(workbook.Sheets.Sheet1);
+  import { onMount } from "svelte";
+
+  let data;
+  onMount(async () => {
+    const res = await fetch(
+      "https://query.data.world/s/ne5hioeoptdqvimde7lx4l262nr7i3"
+    );
+    const buffer = await res.arrayBuffer();
+    const workbook = readXLSX(new Uint8Array(buffer), {
+      type: "array"
     });
+    data = utils.sheet_to_json(workbook.Sheets.Sheet1);
+  });
 </script>
 
 <style>
@@ -41,10 +42,8 @@
 <h1>A Battle of Media!</h1>
 <h2>A history of music media formats and how they impacted industry</h2>
 
-{#await dataPromise}
-  <p>Loading</p>
-{:then data}
+{#if data}
   <Vis {data} />
-{:catch}
-  <p>Error, unable to fetch data</p>
-{/await}
+{:else}
+  <p>Loading</p>
+{/if}

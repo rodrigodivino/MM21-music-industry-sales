@@ -1,7 +1,7 @@
 <script>
   let width, height;
   let margin = { top: 10, left: 10, right: 10, bottom: 10 };
-  export let data;
+  //   export let data;
 
   $: innerWidth = width - margin.left - margin.right;
   $: innerHeight = height - margin.top - margin.bottom;
