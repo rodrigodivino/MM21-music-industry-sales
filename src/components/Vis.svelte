@@ -86,29 +86,18 @@
     font-family: monospace;
     alignment-baseline: hanging;
   }
+
+  line {
+    stroke: dimgray;
+    stroke-width: 3;
+    stroke-dasharray: 5;
+  }
 </style>
 
 <div bind:clientWidth={width} bind:clientHeight={height}>
 
   <svg>
     <g transform="translate({margin.left},{margin.top})">
-      <rect width={innerWidth} height={innerHeight} fill="white" />
-      <g class="y-axis">
-        {#each formats as format}
-          <text
-            class="y-tick"
-            x={xScale(startYears[format]) - 2}
-            y={yScale(format)}>
-            {format}
-          </text>
-        {/each}
-      </g>
-      <g class="x-axis">
-        {#each years.filter(y => y % 2 == 0) as year}
-          <text x={xScale(year)} y={10}>{"'" + year.toString().slice(-2)}</text>
-        {/each}
-      </g>
-
       <g class="marks">
         {#each data as entry}
           {#if entry['Value (Actual)']}
@@ -121,6 +110,34 @@
           {/if}
         {/each}
       </g>
+
+      <g class="rules">
+        {#each [1980, 1990, 2000, 2010] as yeartick, i}
+          <line
+            x1={xScale(yeartick)}
+            y1={0}
+            x2={xScale(yeartick)}
+            y2={[yScale('Vinyl Single'), yScale('Music Video (Physical)'), yScale('Music Video (Physical)'), yScale('Ringtones & Ringbacks')][i] + yScale.bandwidth() / 2} />
+        {/each}
+      </g>
+
+      <g class="y-axis">
+        {#each formats as format}
+          <text
+            class="y-tick"
+            x={xScale(startYears[format]) - 2}
+            y={yScale(format)}>
+            {format}
+          </text>
+        {/each}
+      </g>
+
+      <g class="x-axis">
+        {#each years.filter(y => y % 2 == 0) as year}
+          <text x={xScale(year)} y={10}>{"'" + year.toString().slice(-2)}</text>
+        {/each}
+      </g>
+
     </g>
   </svg>
 
