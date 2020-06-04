@@ -1,5 +1,18 @@
 <script>
   import Vis from "../components/Vis.svelte";
+  import { read as readXLSX, utils } from "xlsx";
+  let dataPromise = fetch(
+    "https://query.data.world/s/ne5hioeoptdqvimde7lx4l262nr7i3"
+  )
+    .then(res => {
+      return res.arrayBuffer();
+    })
+    .then(res => {
+      var workbook = readXLSX(new Uint8Array(res), {
+        type: "array"
+      });
+      return utils.sheet_to_json(workbook.Sheets.Sheet1);
+    });
 </script>
 
 <style>
@@ -28,4 +41,10 @@
 <h1>A Battle of Media!</h1>
 <h2>A history of music media formats and how they impacted industry</h2>
 
-<Vis />
+{#await dataPromise}
+  <p>Loading</p>
+{:then data}
+  <Vis {data} />
+{:catch}
+  <p>Error, unable to fetch data</p>
+{/await}
