@@ -1,10 +1,17 @@
 <script>
+  import { select } from "d3-selection";
+  import { scaleBand } from "d3-scale";
+
+  export let data;
+
   let width, height;
   let margin = { top: 10, left: 10, right: 10, bottom: 10 };
-  //   export let data;
 
   $: innerWidth = width - margin.left - margin.right;
   $: innerHeight = height - margin.top - margin.bottom;
+
+  let problematicKey = Object.keys(data[0]).find(k => k.includes("mat"));
+  for (let obj of data) obj["Format"] = obj[problematicKey];
 </script>
 
 <style>
