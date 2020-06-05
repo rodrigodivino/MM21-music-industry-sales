@@ -102,7 +102,8 @@
   text.colorLegendTick {
     alignment-baseline: hanging;
     text-anchor: middle;
-    font-family: "Courier New", Courier, monospace;
+    font-family: sans-serif;
+    font-size: 0.8em;
   }
 </style>
 
