@@ -2,6 +2,7 @@
   import Vis from "./Vis.svelte";
   import { read as readXLSX, utils } from "xlsx";
   import { onMount } from "svelte";
+  import { Circle } from "svelte-loading-spinners";
 
   let data;
   onMount(async () => {
@@ -17,11 +18,19 @@
 </script>
 
 <style>
-
+  div.loader {
+    display: block;
+    width: 100px;
+    margin: auto;
+  }
 </style>
 
 {#if data}
   <Vis sourcedata={data} />
 {:else}
-  <p>Loading</p>
+  {#if process.browser}
+    <div class="loader">
+      <Circle size={60} />
+    </div>
+  {/if}
 {/if}
