@@ -3,6 +3,7 @@
   import { scaleBand, scaleLinear } from "d3-scale";
   import { extent, range } from "d3-array";
   import { interpolateTurbo as interpolation } from "d3-scale-chromatic";
+  import { annotation } from "d3-svg-annotation";
 
   export let sourcedata;
   const unwantedmedia = [
@@ -67,6 +68,32 @@
     .range([0, colorlegendwidth]);
 
   const colorMap = v => interpolation(colorScale(v));
+
+  let annotationsGroup;
+  $: annotations = [
+    {
+      note: {
+        label: `The CD took over the industry in the early 90's,
+          reigning for two whole decades as Cassettes started losing space.`,
+        title: "The Hero of a Generation",
+        align: "middle",
+        wrap: innerWidth * 0.4
+      },
+      connector: {
+        end: "dot", // none, or arrow or dot
+        type: "line", // Line or curve
+        points: 1, // Number of break in the curve
+        lineType: "vertical"
+      },
+      x: xScale(startYears["CD"]) - 30,
+      y: yScale("CD"),
+      dy: 0.15 * innerWidth,
+      dx: -0.05 * innerWidth
+    }
+  ];
+  $: makeAnnotations = annotation().annotations(annotations);
+  $: if ((makeAnnotations, annotationsGroup))
+    select(annotationsGroup).call(makeAnnotations);
 </script>
 
 <style>
@@ -109,6 +136,11 @@
     text-anchor: middle;
     font-family: sans-serif;
     font-size: 0.8em;
+  }
+
+  path.arrow {
+    stroke: black;
+    stroke-width: 1;
   }
 </style>
 
@@ -156,7 +188,8 @@
         {/each}
       </g>
 
-      <g class="annotations">
+      <g class="annotations" bind:this={annotationsGroup} />
+      <!-- <g class="story">
         <foreignObject
           x={0}
           y={innerHeight * 0.55}
@@ -184,7 +217,7 @@
 
           </div>
         </foreignObject>
-      </g>
+      </g> -->
 
       <g transform="translate(0,{innerHeight * 0.83})" class="colorLegend">
         {#each range(200) as i}
