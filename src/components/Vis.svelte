@@ -57,9 +57,14 @@
     .domain(years)
     .range([50, innerWidth]);
 
-  const colorScale = scaleLinear()
+  $: colorScale = scaleLinear()
     .domain(extent(data.map(d => d["Value (Actual)"])))
     .range([0, 1]);
+
+  $: colorlegendwidth = innerWidth * 0.54;
+  $: colorLegendScale = scaleLinear()
+    .domain(extent(data.map(d => d["Value (Actual)"])))
+    .range([0, colorlegendwidth]);
 
   const colorMap = v => interpolation(colorScale(v));
 </script>
@@ -184,8 +189,8 @@
       <g transform="translate(0,{innerHeight * 0.83})" class="colorLegend">
         {#each range(200) as i}
           <rect
-            x={((innerWidth * 0.54) / 200) * i}
-            width={(innerWidth * 0.54) / 200 + 1}
+            x={(colorlegendwidth / 200) * i}
+            width={colorlegendwidth / 200 + 1}
             height={innerHeight * 0.05}
             fill={interpolation(i / 199)} />
         {/each}
@@ -195,12 +200,12 @@
           x={(innerWidth * 0.54) / 2}>
           Revenue (Adjusted for Inflation)
         </text>
-        {#each range(6) as i}
+        {#each range(11) as i}
           <text
             y={innerHeight * 0.05 + 3}
-            x={((innerWidth * 0.54) / 5) * i}
+            x={colorLegendScale(i * 2000)}
             class="colorLegendTick">
-            ${Math.floor((i * colorScale.domain()[1]) / 5)}
+            ${i * 2}M
           </text>
         {/each}
       </g>
