@@ -40,7 +40,7 @@
 </svelte:head>
 
 <h1>A Battle of Media!</h1>
-<h2>A history of music media formats and how they impacted industry</h2>
+<h2>The rise and fall of music media formats</h2>
 
 {#if data}
   <Vis sourcedata={data} />

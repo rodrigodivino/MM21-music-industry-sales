@@ -1,8 +1,8 @@
 <script>
   import { select } from "d3-selection";
   import { scaleBand, scaleLinear } from "d3-scale";
-  import { extent } from "d3-array";
-  import { interpolateTurbo } from "d3-scale-chromatic";
+  import { extent, range } from "d3-array";
+  import { interpolateTurbo as interpolation } from "d3-scale-chromatic";
 
   export let sourcedata;
   const unwantedmedia = [
@@ -61,11 +61,11 @@
     .domain(extent(data.map(d => d["Value (Actual)"])))
     .range([0, 1]);
 
-  const colorMap = v => interpolateTurbo(colorScale(v));
+  const colorMap = v => interpolation(colorScale(v));
 </script>
 
 <style>
-  div {
+  div#port {
     width: 90vw;
     height: 80vh;
     margin: auto;
@@ -92,9 +92,21 @@
     stroke-width: 3;
     stroke-dasharray: 5;
   }
+
+  text.colorLegendLabel {
+    alignment-baseline: hanging;
+    text-anchor: middle;
+    font-family: "Courier New", Courier, monospace;
+  }
+
+  text.colorLegendTick {
+    alignment-baseline: hanging;
+    text-anchor: middle;
+    font-family: "Courier New", Courier, monospace;
+  }
 </style>
 
-<div bind:clientWidth={width} bind:clientHeight={height}>
+<div id="port" bind:clientWidth={width} bind:clientHeight={height}>
 
   <svg>
     <g transform="translate({margin.left},{margin.top})">
@@ -138,6 +150,59 @@
         {/each}
       </g>
 
+      <g class="annotations">
+        <foreignObject
+          x={0}
+          y={innerHeight * 0.55}
+          width={innerWidth * 0.5}
+          height="200">
+          <div
+            width={innerWidth * 0.5}
+            xmlns="http://www.w3.org/1999/xhtml"
+            class="annotations">
+            <h2>
+              <b>CD: The Hero of a Generation</b>
+            </h2>
+            <p>
+              The CD took over the industry in the early 90's,
+              <br />
+              reigning for
+              <b>two whole decades</b>
+              as Cassettes started losing space.
+              <br />
+              <br />
+              The CD propelled the music industry to its
+              <b>peak performance</b>
+              in 2000.
+            </p>
+
+          </div>
+        </foreignObject>
+      </g>
+
+      <g transform="translate(0,{innerHeight * 0.83})" class="colorLegend">
+        {#each range(200) as i}
+          <rect
+            x={((innerWidth * 0.54) / 200) * i}
+            width={(innerWidth * 0.54) / 200 + 1}
+            height={innerHeight * 0.05}
+            fill={interpolation(i / 199)} />
+        {/each}
+        <text
+          class="colorLegendLabel"
+          y={innerHeight * 0.08 + 8}
+          x={(innerWidth * 0.54) / 2}>
+          Revenue (Adjusted for Inflation)
+        </text>
+        {#each range(6) as i}
+          <text
+            y={innerHeight * 0.05 + 3}
+            x={((innerWidth * 0.54) / 5) * i}
+            class="colorLegendTick">
+            ${Math.floor((i * colorScale.domain()[1]) / 5)}
+          </text>
+        {/each}
+      </g>
     </g>
   </svg>
 
